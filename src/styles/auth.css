@@ -1,0 +1,262 @@
+.auth-container {
+  min-height: 100vh;
+  background: #0b88a8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  background: white;
+  padding: 30px;
+  width: 420px;
+  border-radius: 6px;
+}
+
+.auth-container .auth-card h2 {
+  text-align: center;
+
+}
+
+.auth-card input,
+.auth-card select {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+}
+
+.checkbox {
+  top: 1%;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 10px;
+  background: #0b88a8;
+  color: white;
+  border: none;
+  margin-top: 10px;
+}
+
+.auth-group {
+  margin-bottom: 14px;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.error.center {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+label {
+  padding: px 10px;
+}
+
+.auth-group {
+  margin-bottom: 14px;
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.password-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
+
+.password-icon:hover {
+  color: #0b88a8;
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.password-container.password-icon {
+  position: absolute;
+  right: 12px;
+  top: 30px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
+
+.password-icon:hover {
+  color: #0b88a8;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+  /* space for the icon */
+}
+
+.password-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+.hobby-group {
+  display: flex;
+  /* horizontally align checkboxes */
+  gap: 30px;
+  /* space between each checkbox */
+}
+
+.hobby-group label {
+  display: flex;
+  /* align checkbox & text */
+  align-items: center;
+  /* vertically center text with checkbox */
+  cursor: pointer;
+  /* pointer cursor on hover */
+  font-size: 16px;
+  /* optional: font size */
+  padding: 10px 5px;
+}
+
+.hobby-group input[type="checkbox"] {
+  margin-right: 10px;
+  /* space between checkbox & text */
+  width: 18px;
+  /* optional: size of checkbox */
+  height: 18px;
+}
+
+.hobby-group1 {
+  display: flex;
+  gap: 30px;
+}
+
+.hobby-group1 label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px;
+  padding: 10px 5px;
+}
+
+.hobby-group1 input[type="radio"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  /* right space for icon */
+}
+
+.password-icon {
+  position: absolute;
+  right: 12px;
+  top: 30px;
+  /* input height પ્રમાણે adjust */
+  cursor: pointer;
+  color: #555;
+  font-size: 18px;
+}
+
+.password-icon:hover {
+  color: #000;
+}
+
+.password-group1 {
+  position: relative;
+}
+
+.password-group1 input {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  /* right space for icon */
+}
+
+.password-icon1 {
+  position: absolute;
+  right: 12px;
+  top: 39px;
+  /* input height પ્રમાણે adjust */
+  cursor: pointer;
+  color: #555;
+  font-size: 18px;
+}
+
+.password-icon1:hover {
+  color: #000;
+}
+
+.hobby-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+.hobby-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 6px;
+
+  background: #fff;
+}
+
+/* checkbox only clickable */
+.hobby-box input {
+  cursor: pointer;
+}
+
+/* text NOT clickable */
+.hobby-box span {
+  pointer-events: none;
+}
+
+/* selected style */
+.hobby-box.active {
+  border-color: #2563eb;
+  background-color: #e8efff;
+  font-weight: 500;
+}

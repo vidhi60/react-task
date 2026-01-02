@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Page layout */
+.dashboard {
+  min-height: 100vh;
+  background: #f4f6f8;
+  padding: 30px;
+}
+
+/* Header */
+.dashboard-header {
+  background: #0b88a8;
+  color: white;
+  padding: 20px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Logout button */
+.logout-btn {
+  background: white;
+  color: #0b88a8;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #e6f4f7;
+}
+
+/* Content box */
+.dashboard-content {
+  background: white;
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table th {
+  background: #0b88a8;
+  color: white;
+  text-align: left;
+  padding: 12px;
+}
+
+table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+  background: #f1f9fb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
