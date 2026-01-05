@@ -27,6 +27,11 @@
 .App-link {
   color: #61dafb;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;   /* 🔴 UP-DOWN STOP */
+}
 
 @keyframes App-logo-spin {
   from {

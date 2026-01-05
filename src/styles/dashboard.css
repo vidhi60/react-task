@@ -12,7 +12,7 @@
 
 /* Header */
 .dashboard-header {
-  background: #0b88a8;
+  background: #0B2F35;
   color: white;
   padding: 20px;
   border-radius: 6px;
@@ -28,8 +28,8 @@
 
 /* Logout button */
 .logout-btn {
-  background: white;
-  color: #0b88a8;
+  background: #38efc3;
+  color: black;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -58,8 +58,8 @@ table {
 }
 
 table th {
-  background: #0b88a8;
-  color: white;
+  background: #38efc3;
+  color: black;
   text-align: left;
   padding: 12px;
 }
@@ -73,11 +73,4 @@ table tr:hover {
   background: #f1f9fb;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-}
+

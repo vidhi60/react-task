@@ -48,8 +48,8 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
+    <div className="login-container">
+      <div className="login-card">
         <h2>Login</h2>
 
         <form autoComplete="off" onSubmit={handleLogin}>

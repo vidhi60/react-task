@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/auth.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
-
 const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const editIndex = location.state?.editIndex;
+  const isEdit = editIndex !== undefined;
+
   const [form, setForm] = useState({
+    id: Date.now(),
     fname: "",
     mname: "",
     lname: "",
@@ -21,168 +25,156 @@ const Register = () => {
     confirm: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, checked } = e.target;
-
-    if (name === "hobby") {
-      let hobbies = [...form.hobby];
-      checked ? hobbies.push(value) : hobbies.splice(hobbies.indexOf(value), 1);
-      setForm({ ...form, hobby: hobbies });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
-  };
-  const handleHobbyChange = (value) => {
-    setForm((prev) => ({
-      ...prev,
-      hobby: prev.hobby[0] === value ? [] : [value], // ek j allow
-    }));
-  };
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (Object.values(form).includes("")) {
-      alert("all the fill details");
-      return;
-    }
-
-    if (form.password !== form.confirm) {
-      alert("Password not match");
-      return;
-    }
-
-
-    const oldUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-    const updatedUsers = [...oldUsers, form];
-
-
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-    alert("Registration ");
-    navigate("/");
-  };
-
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  useEffect(() => {
+    if (isEdit) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      setForm(users[editIndex]);
+    }
+  }, [isEdit, editIndex]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleHobbyChange = (value) => {
+    setForm((prev) => ({
+      ...prev,
+      hobby: prev.hobby[0] === value ? [] : [value],
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (isEdit) {
+      users[editIndex] = {
+        ...users[editIndex],
+        ...form,
+        password: users[editIndex].password,
+        confirm: users[editIndex].confirm,
+      };
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("User updated successfully");
+      navigate("/dashboard");
+    } else {
+      if (Object.values(form).includes("")) {
+        alert("Please fill all details");
+        return;
+      }
+
+      if (form.password !== form.confirm) {
+        alert("Password not match");
+        return;
+      }
+
+      users.push(form);
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("Registration successful");
+      navigate("/");
+    }
+  };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Register</h2>
+    <div className="auth-layout">
+      {/* LEFT PANEL */}
+      <div className="auth-left">
+        <div className="hexagon">
+          <img src="/logo2.png" alt="Company Logo" className="logo-img" />
+        </div>
+      </div>
 
-        First Name
-        <input name="fname" placeholder="" onChange={handleChange} />
-        Middle Name
-        <input name="mname" placeholder="" onChange={handleChange} />
-        Last Name
-        <input name="lname" placeholder="" onChange={handleChange} />
+      {/* RIGHT PANEL */}
+      <div className="auth-right">
+        <div className="auth-card">
+          <h2>{isEdit ? "EDIT USER" : "REGISTER"}</h2>
 
-        <select name="city" onChange={handleChange}>
-          <option value="">Select City</option>
-          <option>Surat</option>
-          <option>Ahmedabad</option>
-          <option>Pune</option>
-          <option>Vadodra</option>
-        </select>
+          <input name="fname" placeholder="First Name" value={form.fname} onChange={handleChange} />
+          <input name="mname" placeholder="Middle Name" value={form.mname} onChange={handleChange} />
+          <input name="lname" placeholder="Last Name" value={form.lname} onChange={handleChange} />
 
-        <select name="state" onChange={handleChange}>
-          <option value="">Select State</option>
-          <option>Gujarat</option>
-          <option>Maharashtra</option>
-        </select>
+          <select name="city" value={form.city} onChange={handleChange}>
+            <option value="">Select City</option>
+            <option>Surat</option>
+            <option>Ahmedabad</option>
+            <option>Pune</option>
+            <option>Vadodra</option>
+          </select>
 
-        Hobby
-        <div className="hobby-group">
+          <select name="state" value={form.state} onChange={handleChange}>
+            <option value="">Select State</option>
+            <option>Gujarat</option>
+            <option>Maharashtra</option>
+          </select>
 
-          <div className={form.hobby.includes("Reading") ? "active" : ""}>
-            <input
-              type="checkbox"
-              checked={form.hobby.includes("Reading")}
-              onChange={() => handleHobbyChange("Reading")}
-            />
-            <span>Reading</span>
+          {/* Hobby */}
+          <label>Hobby</label>
+          <div className="hobby-group">
+            <label className={`hobby-box ${form.hobby.includes("Reading") ? "active" : ""}`}>
+              <input type="checkbox" checked={form.hobby.includes("Reading")} onChange={() => handleHobbyChange("Reading")} />
+              <span>Reading</span>
+            </label>
+
+            <label className={`hobby-box ${form.hobby.includes("Music") ? "active" : ""}`}>
+              <input type="checkbox" checked={form.hobby.includes("Music")} onChange={() => handleHobbyChange("Music")} />
+              <span>Music</span>
+            </label>
           </div>
 
-          <div className={form.hobby.includes("Music") ? "active" : ""}>
-            <input
-              type="checkbox"
-              checked={form.hobby.includes("Music")}
-              onChange={() => handleHobbyChange("Music")}
-            />
-            <span>Music</span>
+          {/* Gender */}
+          <label>Gender</label>
+          <div className="gender-group">
+            <label className="gender-box">
+              <input type="radio" name="gender" value="Male" checked={form.gender === "Male"} onChange={handleChange} />
+              <span>Male</span>
+            </label>
+
+            <label className="gender-box">
+              <input type="radio" name="gender" value="Female" checked={form.gender === "Female"} onChange={handleChange} />
+              <span>Female</span>
+            </label>
           </div>
 
-        </div>
+          <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
+          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
 
-        Gender
-        <div className="hobby-group1">
-          <label>
+          {/* Password */}
+          <div className="password-container">
             <input
-              type="radio"
-              name="gender"
-              value="Male"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              disabled={isEdit}
               onChange={handleChange}
-              checked={form.gender.includes("Male")}
             />
-            Male
-          </label>
+            <span className="password-icon" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
 
-          <label>
+          <div className="password-container">
             <input
-              type="radio"
-              name="gender"
-              value="Female"
+              type={showConfirm ? "text" : "password"}
+              name="confirm"
+              placeholder="Confirm Password"
+              value={form.confirm}
+              disabled={isEdit}
               onChange={handleChange}
-              checked={form.gender.includes("Female")}
             />
-            Female
-          </label>
+            <span className="password-icon" onClick={() => setShowConfirm(!showConfirm)}>
+              {showConfirm ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
+          <button className="auth-btn" onClick={handleSubmit}>
+            {isEdit ? "UPDATE" : "REGISTER"}
+          </button>
         </div>
-
-
-        <input name="phone" placeholder="Phone Number" onChange={handleChange} />
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          placeholder="Email"
-          autoComplete="off"
-          onChange={handleChange}
-        />
-
-        <div className="password-container">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={form.password}
-            placeholder="Password"
-            onChange={handleChange}
-          />
-          <span className="password-icon" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-        <div className="password-container">
-          <input
-            type={showConfirm ? "text" : "password"}
-            name="confirm"
-            value={form.confirm}
-            placeholder="Confirm Password"
-            onChange={handleChange}
-          />
-          <span className="password-icon" onClick={() => setShowConfirm(!showConfirm)}>
-            {showConfirm ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-
-        <button onClick={handleSubmit} className="auth-btn">REGISTER</button>
       </div>
     </div>
   );
