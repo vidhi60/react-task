@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/auth.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -25,6 +27,9 @@ const Register = () => {
     confirm: "",
   });
 
+  // 🔹 ORIGINAL DATA (edit compare)
+  const [initialForm, setInitialForm] = useState(null);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -32,6 +37,7 @@ const Register = () => {
     if (isEdit) {
       const users = JSON.parse(localStorage.getItem("users")) || [];
       setForm(users[editIndex]);
+      setInitialForm(users[editIndex]); 
     }
   }, [isEdit, editIndex]);
 
@@ -41,16 +47,28 @@ const Register = () => {
   };
 
   const handleHobbyChange = (value) => {
-    setForm((prev) => ({
-      ...prev,
-      hobby: prev.hobby[0] === value ? [] : [value],
-    }));
+    setForm((prev) => {
+      const exists = prev.hobby.includes(value);
+      return {
+        ...prev,
+        hobby: exists
+          ? prev.hobby.filter((h) => h !== value)
+          : [...prev.hobby, value],
+      };
+    });
+  };
+
+  // 🔹 CHECK IF FORM CHANGED (EDIT MODE)
+  const isFormChanged = () => {
+    if (!initialForm) return false;
+    return JSON.stringify(form) !== JSON.stringify(initialForm);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
+    // EDIT
     if (isEdit) {
       users[editIndex] = {
         ...users[editIndex],
@@ -59,36 +77,51 @@ const Register = () => {
         confirm: users[editIndex].confirm,
       };
       localStorage.setItem("users", JSON.stringify(users));
-      alert("User updated successfully");
-      navigate("/dashboard");
-    } else {
-      if (Object.values(form).includes("")) {
-        alert("Please fill all details");
-        return;
-      }
-
-      if (form.password !== form.confirm) {
-        alert("Password not match");
-        return;
-      }
-
-      users.push(form);
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("Registration successful");
-      navigate("/");
+      toast.success("User updated successfully");
+      setTimeout(() => navigate("/dashboard"), 1500);
+      return;
     }
+
+    // VALIDATION
+    if (
+      !form.fname ||
+      !form.mname ||
+      !form.lname ||
+      !form.city ||
+      !form.state ||
+      !form.gender ||
+      !form.phone ||
+      !form.email ||
+      !form.password ||
+      !form.confirm ||
+      form.hobby.length === 0
+    ) {
+      toast.error("Please fill all details");
+      return;
+    }
+
+    if (form.password !== form.confirm) {
+      toast.error("Password not match");
+      return;
+    }
+
+  
+    users.push(form);
+    localStorage.setItem("users", JSON.stringify(users));
+    toast.success("Registration successful");
+    setTimeout(() => navigate("/"), 1500);
   };
 
   return (
     <div className="auth-layout">
-      {/* LEFT PANEL */}
+      {/* LEFT */}
       <div className="auth-left">
         <div className="hexagon">
           <img src="/logo2.png" alt="Company Logo" className="logo-img" />
         </div>
       </div>
 
-      {/* RIGHT PANEL */}
+      {/* RIGHT */}
       <div className="auth-right">
         <div className="auth-card">
           <h2>{isEdit ? "EDIT USER" : "REGISTER"}</h2>
@@ -111,18 +144,19 @@ const Register = () => {
             <option>Maharashtra</option>
           </select>
 
-          {/* Hobby */}
+          {/* HOBBY */}
           <label>Hobby</label>
           <div className="hobby-group">
-            <label className={`hobby-box ${form.hobby.includes("Reading") ? "active" : ""}`}>
-              <input type="checkbox" checked={form.hobby.includes("Reading")} onChange={() => handleHobbyChange("Reading")} />
-              <span>Reading</span>
-            </label>
-
-            <label className={`hobby-box ${form.hobby.includes("Music") ? "active" : ""}`}>
-              <input type="checkbox" checked={form.hobby.includes("Music")} onChange={() => handleHobbyChange("Music")} />
-              <span>Music</span>
-            </label>
+            {["Reading", "Music", "Sports", "Travel"].map((h) => (
+              <label key={h} className={`hobby-box ${form.hobby.includes(h) ? "active" : ""}`}>
+                <input
+                  type="checkbox"
+                  checked={form.hobby.includes(h)}
+                  onChange={() => handleHobbyChange(h)}
+                />
+                <span>{h}</span>
+              </label>
+            ))}
           </div>
 
           {/* Gender */}
@@ -132,7 +166,6 @@ const Register = () => {
               <input type="radio" name="gender" value="Male" checked={form.gender === "Male"} onChange={handleChange} />
               <span>Male</span>
             </label>
-
             <label className="gender-box">
               <input type="radio" name="gender" value="Female" checked={form.gender === "Female"} onChange={handleChange} />
               <span>Female</span>
@@ -140,7 +173,7 @@ const Register = () => {
           </div>
 
           <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
-          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
+          <input name="email" placeholder="Email" value={form.email} disabled={isEdit} onChange={handleChange} />
 
           {/* Password */}
           <div className="password-container">
@@ -171,9 +204,28 @@ const Register = () => {
             </span>
           </div>
 
-          <button className="auth-btn" onClick={handleSubmit}>
+ 
+          <button
+            className="auth-btn"
+            onClick={handleSubmit}
+            disabled={isEdit && !isFormChanged()}
+          >
             {isEdit ? "UPDATE" : "REGISTER"}
           </button>
+
+          <div className="auth-divider"></div>
+          <p className="auth-bottom-text">
+            Already have an account?{" "}
+            <span onClick={() => navigate("/")}>Login</span>
+          </p>
+
+          <ToastContainer
+            position="top-right"
+            autoClose={false}
+            hideProgressBar={true}
+            closeOnClick
+            pauseOnHover
+          />
         </div>
       </div>
     </div>

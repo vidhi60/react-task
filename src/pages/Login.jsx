@@ -13,28 +13,18 @@ const Login = () => {
 
   const validate = () => {
     let temp = {};
-
-    if (!email) {
-      temp.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      temp.email = "Invalid email format";
-    }
-
-    if (!password) {
-      temp.password = "Password is required";
-    }
-
+    if (!email) temp.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) temp.email = "Invalid email format";
+    if (!password) temp.password = "Password is required";
     setErrors(temp);
     return Object.keys(temp).length === 0;
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
-
     const matchedUser = users.find(
       (u) => u.email === email && u.password === password
     );
@@ -50,16 +40,15 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Login</h2>
+        <h2>LOGIN</h2>
 
-        <form autoComplete="off" onSubmit={handleLogin}>
+        <form autoComplete="off" onSubmit={handleLogin} className="login-form">
           <div className="auth-group">
             <label>Email</label>
             <input
               type="email"
               value={email}
               placeholder="Enter email"
-              autoComplete="off"
               onChange={(e) => setEmail(e.target.value)}
             />
             {errors.email && <p className="error">{errors.email}</p>}
@@ -67,41 +56,27 @@ const Login = () => {
 
           <div className="auth-group password-group1">
             <label>Password</label>
-
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               placeholder="Enter password"
-              autoComplete="new-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-
-            <span
-              className="password-icon1"
-              onClick={() => setShowPassword(!showPassword)}
-            >
+            <span className="password-icon1" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-
-            {errors.password && (
-              <p className="error">{errors.password}</p>
-            )}
+            {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
-          {errors.general && (
-            <p className="error center">{errors.general}</p>
-          )}
+          {errors.general && <p className="error center">{errors.general}</p>}
 
-          <button type="submit" className="auth-btn">
-            LOGIN
-          </button>
+          <button type="submit" className="auth-btn">LOGIN</button>
 
-          <div className="auth-links">
-            <p>
-              Not registered?{" "}
-              <span onClick={() => navigate("/register")}>Sign Up</span>
-            </p>
-          </div>
+          <div className="auth-divider"></div>
+          <p className="auth-bottom-text">
+            Not registered?{" "}
+            <span onClick={() => navigate("/register")}>Sign Up</span>
+          </p>
         </form>
       </div>
     </div>
