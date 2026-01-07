@@ -4,13 +4,14 @@
   display: flex;
   font-family: "Segoe UI", sans-serif;
 }
+
 /* LOGIN PAGE (OLD SIMPLE DESIGN) */
 .login-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #0B2F35,#38efc3);
+  background: linear-gradient(135deg, #0B2F35, #38efc3);
 
 }
 
@@ -62,6 +63,18 @@
   cursor: pointer;
   font-weight: 500;
 }
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.error.center {
+  text-align: center;
+  margin-top: 10px;
+}
+
 /* password wrapper */
 .password-group1 {
   position: relative;
@@ -69,7 +82,8 @@
 
 /* input right padding for icon space */
 .password-group1 input {
-  padding-right: 42px; /* icon માટે space */
+  padding-right: 42px;
+  /* icon માટે space */
 }
 
 /* eye icon inside input */
@@ -104,7 +118,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;   
+  background: transparent;
 }
 
 
@@ -147,15 +161,16 @@
 .auth-card select {
   color: #9fb4c7;
 }
+
 /* Select box text */
 .auth-card select {
-  color: #ffffff;            
-  
+  color: #ffffff;
+
 }
 
 
 .auth-card select option {
-  color: #0f172a;             
+  color: #0f172a;
 
 }
 
@@ -166,6 +181,7 @@
   margin-bottom: 30px;
   letter-spacing: 1px;
 }
+
 /* Logo image inside hexagon */
 .logo-img {
   width: 25%;
@@ -225,17 +241,19 @@
   transform: translateY(-50%);
   cursor: pointer;
 }
+
 .auth-btn:disabled {
-  opacity: 0.6;          
-  cursor: not-allowed;  
-  pointer-events: all;  
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: all;
 }
+
 /* Disabled input fields */
 input:disabled,
 select:disabled {
-  opacity: 0.6;          
-  cursor: not-allowed;   
- 
+  opacity: 0.6;
+  cursor: not-allowed;
+
 }
 
 
@@ -249,8 +267,8 @@ select:disabled {
 .hobby-box {
   flex: 1;
   display: flex;
-  justify-content: center;    
-  align-items: center;        
+  justify-content: center;
+  align-items: center;
   gap: 12px;
 
   padding: 14px 0;
@@ -260,13 +278,13 @@ select:disabled {
 }
 
 .hobby-box input[type="checkbox"] {
-  margin: 0;                   
+  margin: 0;
   width: 16px;
   height: 16px;
 }
 
 .hobby-box span {
-  line-height: 1;             
+  line-height: 1;
 }
 
 .hobby-box.active {
@@ -284,17 +302,18 @@ select:disabled {
 
 .gender-box {
   display: flex;
-  align-items: center;    
+  align-items: center;
   gap: 8px;
 }
 
 .gender-box input {
-  margin: 0;                    
+  margin: 0;
 }
 
 .gender-box span {
   line-height: 1;
 }
+
 .success-msg {
   background: #22c55e;
   color: white;
@@ -304,6 +323,7 @@ select:disabled {
   margin-bottom: 12px;
   font-size: 14px;
 }
+
 .auth-card {
   min-height: 420px;
   display: flex;
@@ -337,7 +357,3 @@ select:disabled {
 .auth-bottom-text span:hover {
   text-decoration: underline;
 }
-
-
-
-

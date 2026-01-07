@@ -62,6 +62,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    
     if (
       !form.fname ||
       !form.mname ||
@@ -79,12 +80,22 @@ const Register = () => {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (form.phone.length !== 10) {
+      toast.error("Mobile number must be 10 digits");
+      return;
+    }
+
     if (form.password !== form.confirm) {
       toast.error("Password not match");
       return;
     }
 
-    // ✏️ EDIT MODE
     if (isEdit) {
       const users = JSON.parse(localStorage.getItem("users")) || [];
       users[editIndex] = { ...users[editIndex], ...form };
@@ -94,7 +105,7 @@ const Register = () => {
       return;
     }
 
-    // ✅ SAFE Redux register
+
     dispatch(registerUser(form))
       .unwrap()
       .then(() => {
@@ -166,8 +177,26 @@ const Register = () => {
             ))}
           </div>
 
-          <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
-          <input name="email" placeholder="Email" value={form.email} disabled={isEdit} onChange={handleChange} />
+          
+          <input
+            name="phone"
+            placeholder="Phone Number"
+            value={form.phone}
+            maxLength={10}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+              setForm({ ...form, phone: onlyNumbers });
+            }}
+          />
+
+       
+          <input
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            disabled={isEdit}
+            onChange={handleChange}
+          />
 
           <div className="password-container">
             <input

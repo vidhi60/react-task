@@ -25,7 +25,7 @@ const Login = () => {
     return Object.keys(temp).length === 0;
   };
 
-  // ✅ FINAL SAFE LOGIN
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -40,7 +40,7 @@ const Login = () => {
       });
   };
 
-  // ❌ NO navigation here
+  
   useEffect(() => {
     if (error) {
       setErrors({ general: error });
@@ -52,12 +52,13 @@ const Login = () => {
       <div className="login-card">
         <h2>LOGIN</h2>
 
-        <form onSubmit={handleLogin} className="login-form">
+        <form onSubmit={handleLogin} className="login-form" autoComplete="off">
           <div className="auth-group">
             <label>Email</label>
             <input
               type="email"
               value={email}
+              autoComplete="off"
               placeholder="Enter email"
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -70,6 +71,7 @@ const Login = () => {
               type={showPassword ? "text" : "password"}
               value={password}
               placeholder="Enter password"
+              autoComplete="new-password"
               onChange={(e) => setPassword(e.target.value)}
             />
             <span

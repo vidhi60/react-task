@@ -5,6 +5,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async ({ email, password }, thunkAPI) => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
+
     const user = users.find(
       (u) => u.email === email && u.password === password
     );
@@ -14,6 +15,8 @@ export const loginUser = createAsyncThunk(
     }
 
     localStorage.setItem("auth", "true");
+    localStorage.setItem("loggedInEmail", user.email); // ✅ store email
+
     return user;
   }
 );
@@ -42,6 +45,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       localStorage.removeItem("auth");
+      localStorage.removeItem("loggedInEmail"); // ✅ clear on logout
     },
   },
   extraReducers: (builder) => {
@@ -53,7 +57,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload; // ✅ logged in user
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {

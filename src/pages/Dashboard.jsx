@@ -11,6 +11,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users.list);
+  const authUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -19,7 +20,6 @@ const Dashboard = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate("/", { replace: true });
-
   };
 
   const handleDelete = (id) => {
@@ -31,6 +31,13 @@ const Dashboard = () => {
   const handleEdit = (index) => {
     navigate("/register", { state: { editIndex: index } });
   };
+
+
+  const filteredUsers = authUser
+    ? users
+        .filter((u) => u.email === authUser.email)
+        .slice(-1) 
+    : [];
 
   return (
     <div className="dashboard">
@@ -58,14 +65,14 @@ const Dashboard = () => {
           </thead>
 
           <tbody>
-            {users.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <tr>
                 <td colSpan="9" align="center">
                   No Data Found
                 </td>
               </tr>
             ) : (
-              users.map((u, index) => (
+              filteredUsers.map((u, index) => (
                 <tr key={u.id}>
                   <td>{index + 1}</td>
                   <td>{u.fname} {u.mname} {u.lname}</td>
