@@ -4,10 +4,13 @@ import "../styles/auth.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../store/authSlice";
 
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const editIndex = location.state?.editIndex;
   const isEdit = editIndex !== undefined;
@@ -27,9 +30,7 @@ const Register = () => {
     confirm: "",
   });
 
-  // 🔹 ORIGINAL DATA (edit compare)
   const [initialForm, setInitialForm] = useState(null);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -37,7 +38,7 @@ const Register = () => {
     if (isEdit) {
       const users = JSON.parse(localStorage.getItem("users")) || [];
       setForm(users[editIndex]);
-      setInitialForm(users[editIndex]); 
+      setInitialForm(users[editIndex]);
     }
   }, [isEdit, editIndex]);
 
@@ -47,42 +48,20 @@ const Register = () => {
   };
 
   const handleHobbyChange = (value) => {
-    setForm((prev) => {
-      const exists = prev.hobby.includes(value);
-      return {
-        ...prev,
-        hobby: exists
-          ? prev.hobby.filter((h) => h !== value)
-          : [...prev.hobby, value],
-      };
-    });
+    setForm((prev) => ({
+      ...prev,
+      hobby: prev.hobby.includes(value)
+        ? prev.hobby.filter((h) => h !== value)
+        : [...prev.hobby, value],
+    }));
   };
 
-  // 🔹 CHECK IF FORM CHANGED (EDIT MODE)
-  const isFormChanged = () => {
-    if (!initialForm) return false;
-    return JSON.stringify(form) !== JSON.stringify(initialForm);
-  };
+  const isFormChanged = () =>
+    initialForm && JSON.stringify(form) !== JSON.stringify(initialForm);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // EDIT
-    if (isEdit) {
-      users[editIndex] = {
-        ...users[editIndex],
-        ...form,
-        password: users[editIndex].password,
-        confirm: users[editIndex].confirm,
-      };
-      localStorage.setItem("users", JSON.stringify(users));
-      toast.success("User updated successfully");
-      setTimeout(() => navigate("/dashboard"), 1500);
-      return;
-    }
-
-    // VALIDATION
     if (
       !form.fname ||
       !form.mname ||
@@ -105,23 +84,36 @@ const Register = () => {
       return;
     }
 
-  
-    users.push(form);
-    localStorage.setItem("users", JSON.stringify(users));
-    toast.success("Registration successful");
-    setTimeout(() => navigate("/"), 1500);
+    // ✏️ EDIT MODE
+    if (isEdit) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      users[editIndex] = { ...users[editIndex], ...form };
+      localStorage.setItem("users", JSON.stringify(users));
+      toast.success("User updated successfully");
+      setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
+      return;
+    }
+
+    // ✅ SAFE Redux register
+    dispatch(registerUser(form))
+      .unwrap()
+      .then(() => {
+        toast.success("Registration successful");
+        setTimeout(() => navigate("/", { replace: true }), 1500);
+      })
+      .catch(() => {
+        toast.error("Registration failed");
+      });
   };
 
   return (
     <div className="auth-layout">
-      {/* LEFT */}
       <div className="auth-left">
         <div className="hexagon">
           <img src="/logo2.png" alt="Company Logo" className="logo-img" />
         </div>
       </div>
 
-      {/* RIGHT */}
       <div className="auth-right">
         <div className="auth-card">
           <h2>{isEdit ? "EDIT USER" : "REGISTER"}</h2>
@@ -144,7 +136,6 @@ const Register = () => {
             <option>Maharashtra</option>
           </select>
 
-          {/* HOBBY */}
           <label>Hobby</label>
           <div className="hobby-group">
             {["Reading", "Music", "Sports", "Travel"].map((h) => (
@@ -159,23 +150,25 @@ const Register = () => {
             ))}
           </div>
 
-          {/* Gender */}
           <label>Gender</label>
           <div className="gender-group">
-            <label className="gender-box">
-              <input type="radio" name="gender" value="Male" checked={form.gender === "Male"} onChange={handleChange} />
-              <span>Male</span>
-            </label>
-            <label className="gender-box">
-              <input type="radio" name="gender" value="Female" checked={form.gender === "Female"} onChange={handleChange} />
-              <span>Female</span>
-            </label>
+            {["Male", "Female"].map((g) => (
+              <label key={g} className="gender-box">
+                <input
+                  type="radio"
+                  name="gender"
+                  value={g}
+                  checked={form.gender === g}
+                  onChange={handleChange}
+                />
+                <span>{g}</span>
+              </label>
+            ))}
           </div>
 
           <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} />
           <input name="email" placeholder="Email" value={form.email} disabled={isEdit} onChange={handleChange} />
 
-          {/* Password */}
           <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
@@ -204,7 +197,6 @@ const Register = () => {
             </span>
           </div>
 
- 
           <button
             className="auth-btn"
             onClick={handleSubmit}
@@ -219,13 +211,7 @@ const Register = () => {
             <span onClick={() => navigate("/")}>Login</span>
           </p>
 
-          <ToastContainer
-            position="top-right"
-            autoClose={false}
-            hideProgressBar={true}
-            closeOnClick
-            pauseOnHover
-          />
+          <ToastContainer hideProgressBar />
         </div>
       </div>
     </div>

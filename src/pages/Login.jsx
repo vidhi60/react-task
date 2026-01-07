@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../store/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { error, loading } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,29 +25,34 @@ const Login = () => {
     return Object.keys(temp).length === 0;
   };
 
+  // ✅ FINAL SAFE LOGIN
   const handleLogin = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const matchedUser = users.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (matchedUser) {
-      localStorage.setItem("auth", true);
-      navigate("/dashboard");
-    } else {
-      setErrors({ general: "Invalid email or password" });
-    }
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/dashboard", { replace: true });
+      })
+      .catch((err) => {
+        setErrors({ general: err });
+      });
   };
+
+  // ❌ NO navigation here
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error });
+    }
+  }, [error]);
 
   return (
     <div className="login-container">
       <div className="login-card">
         <h2>LOGIN</h2>
 
-        <form autoComplete="off" onSubmit={handleLogin} className="login-form">
+        <form onSubmit={handleLogin} className="login-form">
           <div className="auth-group">
             <label>Email</label>
             <input
@@ -62,15 +72,22 @@ const Login = () => {
               placeholder="Enter password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <span className="password-icon1" onClick={() => setShowPassword(!showPassword)}>
+            <span
+              className="password-icon1"
+              onClick={() => setShowPassword(!showPassword)}
+            >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
-          {errors.general && <p className="error center">{errors.general}</p>}
+          {errors.general && (
+            <p className="error center">{errors.general}</p>
+          )}
 
-          <button type="submit" className="auth-btn">LOGIN</button>
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? "Logging in..." : "LOGIN"}
+          </button>
 
           <div className="auth-divider"></div>
           <p className="auth-bottom-text">
